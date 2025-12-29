@@ -56,3 +56,15 @@ void LinkedList::findNode(int value) {
     return;
 }
 
+void LinkedList::makeCircular() {
+    if (!head) return;
+
+    Node* currentNode = head.get();
+
+    while (currentNode) {
+        currentNode = currentNode->nextPointer.get();
+    }
+    currentNode->nextPointer.reset(head.get());
+
+}
+

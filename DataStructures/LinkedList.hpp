@@ -18,4 +18,5 @@ class LinkedList {
         void insertNode(std::unique_ptr<Node> newNode);
         void deleteNode(int value);
         void findNode(int value);
+        void makeCircular();
 };
