@@ -3,68 +3,76 @@
 
 Node::Node(int val) : value(val), nextPointer(nullptr) {}
 
-
 LinkedList::LinkedList() : head(nullptr) {}
 
-void LinkedList::insertNode(std::unique_ptr<Node> newNode) {
+void LinkedList::insertNode(std::shared_ptr<Node> newNode) {
     if (head == nullptr) {
-        head = std::move(newNode);
+        head = newNode;
         return;
     }
-
-    Node* currentNode = head.get();
+    
+    std::shared_ptr<Node> currentNode = head;
     while (currentNode->nextPointer) {
-        currentNode = currentNode->nextPointer.get();
+        currentNode = currentNode->nextPointer;
     }
-    currentNode->nextPointer = std::move(newNode);
+    currentNode->nextPointer = newNode;
 }
 
 void LinkedList::deleteNode(int value) {
-    if (head && head->value == value) {
-    head = std::move(head->nextPointer);
-    std::cout << "Deleted head node" << "\n";
-    return;
-    }
-
-    if (head->value == value) {
-        head = std::move(head->nextPointer);
+    if (!head) {
+        std::cout << "List is empty\n";
         return;
     }
-
+    
+    if (head->value == value) {
+        head = head->nextPointer;
+        std::cout << "Deleted head node\n";
+        return;
+    }
+    
+    std::shared_ptr<Node> currentNode = head;
+    while (currentNode->nextPointer) {
+        if (currentNode->nextPointer->value == value) {
+            currentNode->nextPointer = currentNode->nextPointer->nextPointer;
+            std::cout << "Deleted node with value " << value << "\n";
+            return;
+        }
+        currentNode = currentNode->nextPointer;
+    }
+    
+    std::cout << "Node with value " << value << " not found\n";
 }
 
 void LinkedList::findNode(int value) {
     if (!head) {
-    std::cout << "Node not found (empty list)\n";
-    return;
-    }
-
-    if (head->value == value) {
-        std::cout << "Value found at head node" << "\n";
+        std::cout << "Node not found (empty list)\n";
         return;
     }
-    Node* currentNode = head->nextPointer.get();
-
+    
+    if (head->value == value) {
+        std::cout << "Value found at head node\n";
+        return;
+    }
+    
+    std::shared_ptr<Node> currentNode = head->nextPointer;
     while (currentNode) {
-        if (currentNode-> value == value) {
-            std::cout << "Node found in linked list" <<  "\n";
+        if (currentNode->value == value) {
+            std::cout << "Node found in linked list\n";
             return;
         }
-        currentNode = currentNode->nextPointer.get();
+        currentNode = currentNode->nextPointer;
     }
-    std::cout << "Node not found in linked list" << "\n";
-    return;
+    
+    std::cout << "Node not found in linked list\n";
 }
 
 void LinkedList::makeCircular() {
     if (!head) return;
-
-    Node* currentNode = head.get();
-
-    while (currentNode) {
-        currentNode = currentNode->nextPointer.get();
+    
+    std::shared_ptr<Node> currentNode = head;
+    while (currentNode->nextPointer) {
+        currentNode = currentNode->nextPointer;
     }
-    currentNode->nextPointer.reset(head.get());
-
+    
+    currentNode->nextPointer = head;
 }
-
